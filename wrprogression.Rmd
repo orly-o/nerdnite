@@ -33,6 +33,9 @@ world = world %>%
 world = world %>%
   mutate(Date = mdy(Date),
          Year = year(Date))
+
+# change time to seconds for modeling
+
 ```
 
 Summarize the data:
