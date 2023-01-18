@@ -1,0 +1,23 @@
+---
+title: "Nerd Nite"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(dplyr)
+```
+
+```{r data load, warning = FALSE}
+setwd("C:/Users/Orly Olbum/OneDrive - Inpleo/Desktop/Misc/Nerd Nite Feb 2022")
+world = read.csv("WRData.csv")
+
+```
+
+
+
+
+
+
+
