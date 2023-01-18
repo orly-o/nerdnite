@@ -1,17 +1,205 @@
 ---
 title: "Nerd Nite"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
 library(dplyr)
+library(lubridate)
+library(scales)
+library(plotly)
 ```
+
+Load in the data and create two new columns, one for if the Meet was the Olympics and one for if the Meet was World Champs.
 
 ```{r data load, warning = FALSE}
 setwd("C:/Users/Orly Olbum/OneDrive - Inpleo/Desktop/Misc/Nerd Nite Feb 2022")
 world = read.csv("WRData.csv")
+
+# see which ones are Olympics/Worlds vs. not
+world = world %>%
+  mutate(Olympics = ifelse(grepl("Olympic Games", Meet, TRUE), TRUE, FALSE),
+         Worlds = ifelse(grepl("World Champs", Meet, TRUE), TRUE, FALSE))
+
+# add column for stroke
+world = world %>%
+  mutate(Stroke = gsub("[^a-zA-Z]", "", Event))
+
+# get year from date (first format date)
+world = world %>%
+  mutate(Date = mdy(Date),
+         Year = year(Date))
+```
+
+Summarize the data:
+How many world records are there per event?
+
+```{r, warning = FALSE}
+world %>%
+  group_by(Event, Gender) %>%
+  summarise(Count = length(Event))
+```
+
+World records by country
+
+```{r}
+world %>%
+  group_by(Swimmer_Country) %>%
+  summarise(Count = length(Event)) %>%
+  arrange(desc(Count))
+```
+
+World records by stroke
+
+```{r}
+world %>%
+  group_by(Stroke) %>%
+  summarise(Count = length(Event)) %>%
+  arrange(desc(Count))
+```
+
+Top 10 swimmers M/F by number of world records
+
+```{r}
+# women
+world %>%
+  filter(Gender == "F") %>%
+  group_by(Swimmer, Swimmer_Country) %>%
+  summarise(Count = length(Event)) %>%
+  arrange(desc(Count)) %>%
+  head(10)
+```
+
+```{r}
+# men
+world %>%
+  filter(Gender == "M") %>%
+  group_by(Swimmer, Swimmer_Country) %>%
+  summarise(Count = length(Event)) %>%
+  arrange(desc(Count)) %>%
+  head(10)
+```
+
+How many world records were broken in each Olympic games?
+
+```{r}
+world %>%
+  filter(Olympics == TRUE) %>%
+  group_by(Meet) %>%
+  summarise(Count = length(Event))
+```
+
+```{r}
+# for bar plot of WRs by Olympic Year
+olympic_wrs = world %>%
+  filter(Olympics == TRUE) %>%
+  group_by(Year) %>%
+  summarise(Count = length(Event))
+
+# plot bar chart
+plot_ly(
+  data = olympic_wrs,
+  x = ~Year,
+  y = ~Count,
+  type = "bar",
+  text = ~Count,
+  name = "",
+  hovertemplate = paste("%{x}", "<br>%{text}")
+) %>%
+  layout(
+    title = "WRs by Olympic Games",
+    xaxis = list(
+      title = "Olympic Games"
+    ),
+    yaxis = list(
+      title = "World Records"
+    )
+  )
+```
+
+How many world records were broken in each World champs?
+
+```{r}
+world %>%
+  filter(Worlds == TRUE) %>%
+  group_by(Meet) %>%
+  summarise(Count = length(Event))
+```
+
+How many world records were broken by year overall?
+
+```{r}
+records_year = world %>%
+  group_by(Year) %>%
+  summarise(Count = length(Event))
+
+# plot bar chart
+plot_ly(
+  data = records_year,
+  x = ~Year,
+  y = ~Count,
+  type = "bar",
+  text = ~Count,
+  name = "",
+  hovertemplate = paste("%{x}", "<br>%{text}")
+) %>%
+  layout(
+    title = "WRs by Year",
+    xaxis = list(
+      title = "Year"
+    ),
+    yaxis = list(
+      title = "World Records"
+    )
+  )
+```
+
+How many world records were broken in/not in an Olympics or Worlds?
+
+```{r}
+# in Olympics or Worlds
+world %>%
+  filter(Olympics == TRUE | Worlds == TRUE) %>%
+  summarise(Count = length(Event))
+
+# not in Olympics or Worlds
+world %>%
+  filter(Olympics == FALSE & Worlds == FALSE) %>%
+  summarise(Count = length(Event))
+```
+
+The textile suits came out in  2008 and were banned at the end of 2009. How many world records were broken in those 2 years? What percentage of all WRs were in this timeframe?
+
+```{r}
+tech_wrs = world %>%
+  filter(Year == 2008 | Year == 2009) %>%
+  summarise(Count = length(Event))
+
+all_wrs = nrow(world)
+
+tech_wrs[1,]
+percent(tech_wrs[1,]/all_wrs)
+```
+
+Replicate some stat analysis from https://sites.northwestern.edu/elannesscohn/2019/07/03/disruptive-sports-tech-exploratory-analysis-of-swim-world-record-data/ modeling the freestyle (non-50) events for men and women before and after the goggles were brought to the Olympics in 1976.
+
+```{r}
+# prep data for the modeling
+# want only freestyle and not the 50
+free = world %>%
+  filter(Event == "100 FR" | 
+           Event == "200 FR" | 
+           Event == "400 FR" | 
+           Event == "800 FR" | 
+           Event == "1500 FR") %>%
+  mutate(Goggles = ifelse(Year < 1976, TRUE, FALSE))
+
+# set up models
+mod1 = lm(Time ~ Gender + Goggles, data = free)
 
 ```
 
