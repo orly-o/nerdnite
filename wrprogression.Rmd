@@ -206,10 +206,41 @@ Plot World Record times over Time for each freestyle event, colored by men and w
 
 ```{r, warning = FALSE, fig.width = 10}
 # 50 free
-mod50F = lm(Time ~ Date, 
-            data = world[world$Event == "50 FR" & world$Gender == "F",])
+
+# set up moving average
+xx = world
+x.info = attr(xx, "tsp")
+tt = seq(from = x.info[1], to = x.info[2], by = 1/x.info[3])
+
+rmean5 = stats::filter(xx, rep(1/5, 5), side=2)
+
+plot_ly() %>%
+  add_markers(
+    data = world[world$Event == "100 FR" & world$Gender == "F",],
+    x = ~Date, y = ~Time, name = "Female"
+  ) %>%
+  add_markers(
+    data = world[world$Event == "100 FR" & world$Gender == "M",],
+    x = ~Date, y = ~Time, name = "Male"
+  ) %>%
+  layout(
+    title = "100 Free WRs over Time",
+    xaxis = list(
+      title = "Date"
+    ),
+    yaxis = list(
+      title = "Seconds"
+    )
+  ) %>%
+  add_lines(
+    x = tt, y = rmean5
+  )
+```
+
+```{r}
+
 plot_ly(
-  data = world[world$Event == "50 FR" & world$Gender == "F",],
+  data = world[world$Event == "50 FR",],
   x = ~Date,
   y = ~Time,
   color = ~Gender,
@@ -225,9 +256,7 @@ plot_ly(
     yaxis = list(
       title = "Seconds"
     )
-  ) %>%
-  add_lines(x = ~Date,
-            y = fitted(mod50F))
+  )
 ```
 
 ```{r, warning = FALSE, fig.width = 10}
@@ -254,22 +283,90 @@ plot_ly(
 
 ```{r, warning = FALSE, fig.width = 10}
 # 200 free
-
+plot_ly(
+  data = world[world$Event == "200 FR",],
+  x = ~Date,
+  y = ~Time,
+  color = ~Gender,
+  type = "scatter",
+  mode = "markers",
+  text = ~Swimmer
+) %>%
+  layout(
+    title = "200 Free WRs over Time",
+    xaxis = list(
+      title = "Date"
+    ),
+    yaxis = list(
+      title = "Seconds"
+    )
+  )
 ```
 
 ```{r, warning = FALSE, fig.width = 10}
 # 400 free
-
+plot_ly(
+  data = world[world$Event == "400 FR",],
+  x = ~Date,
+  y = ~Time,
+  color = ~Gender,
+  type = "scatter",
+  mode = "markers",
+  text = ~Swimmer
+) %>%
+  layout(
+    title = "400 Free WRs over Time",
+    xaxis = list(
+      title = "Date"
+    ),
+    yaxis = list(
+      title = "Seconds"
+    )
+  )
 ```
 
 ```{r, warning = FALSE, fig.width = 10}
 # 800 free
-
+plot_ly(
+  data = world[world$Event == "800 FR",],
+  x = ~Date,
+  y = ~Time,
+  color = ~Gender,
+  type = "scatter",
+  mode = "markers",
+  text = ~Swimmer
+) %>%
+  layout(
+    title = "800 Free WRs over Time",
+    xaxis = list(
+      title = "Date"
+    ),
+    yaxis = list(
+      title = "Seconds"
+    )
+  )
 ```
 
 ```{r, warning = FALSE, fig.width = 10}
 # 1500 free
-
+plot_ly(
+  data = world[world$Event == "1500 FR",],
+  x = ~Date,
+  y = ~Time,
+  color = ~Gender,
+  type = "scatter",
+  mode = "markers",
+  text = ~Swimmer
+) %>%
+  layout(
+    title = "1500 Free WRs over Time",
+    xaxis = list(
+      title = "Date"
+    ),
+    yaxis = list(
+      title = "Seconds"
+    )
+  )
 ```
 
 Replicate some stat analysis from https://sites.northwestern.edu/elannesscohn/2019/07/03/disruptive-sports-tech-exploratory-analysis-of-swim-world-record-data/ modeling the freestyle (non-50) events for men and women before and after the goggles were brought to the Olympics in 1976.
