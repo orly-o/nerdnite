@@ -33,9 +33,6 @@ world = world %>%
 world = world %>%
   mutate(Date = mdy(Date),
          Year = year(Date))
-
-# change time to seconds for modeling
-
 ```
 
 Summarize the data:
@@ -175,6 +172,21 @@ world %>%
   summarise(Count = length(Event))
 ```
 
+How many world records were broken by GDR women between 1970 and 1980 (height of doping)? What percentage of all world records?
+
+```{r}
+gdrw_wrs = world %>%
+  filter(Swimmer_Country == "GDR" &
+           Gender == "F" &
+           Year >= 1970 & Year <= 1980) %>%
+  summarise(Count = length(Event))
+
+all_wrs = nrow(world)
+
+gdrw_wrs[1,]
+percent(gdrw_wrs[1,]/all_wrs)
+```
+
 The textile suits came out in  2008 and were banned at the end of 2009. How many world records were broken in those 2 years? What percentage of all WRs were in this timeframe?
 
 ```{r}
@@ -186,6 +198,77 @@ all_wrs = nrow(world)
 
 tech_wrs[1,]
 percent(tech_wrs[1,]/all_wrs)
+```
+
+The GDR women make up almost as many world records as the LZR records of 2008-2009 - which is perhaps more evidence suggesting the suits shouldn't have been allowed in the first place. It may be up for discussion if they were considered technical doping, but there was no doubt about the East German's doping.
+
+Plot World Record times over Time for each freestyle event, colored by men and women.
+
+```{r, warning = FALSE, fig.width = 10}
+# 50 free
+mod50F = lm(Time ~ Date, 
+            data = world[world$Event == "50 FR" & world$Gender == "F",])
+plot_ly(
+  data = world[world$Event == "50 FR" & world$Gender == "F",],
+  x = ~Date,
+  y = ~Time,
+  color = ~Gender,
+  type = "scatter",
+  mode = "markers",
+  text = ~Swimmer
+) %>%
+  layout(
+    title = "50 Free WRs over Time",
+    xaxis = list(
+      title = "Date"
+    ),
+    yaxis = list(
+    )
+  ) %>%
+  add_lines(x = ~Date,
+            y = fitted(mod50F))
+```
+
+```{r, warning = FALSE, fig.width = 10}
+# 100 free
+plot_ly(
+  data = world[world$Event == "100 FR",],
+  x = ~Date,
+  y = ~Time,
+  color = ~Gender,
+  type = "scatter",
+  mode = "markers",
+  text = ~Swimmer
+) %>%
+  layout(
+    title = "100 Free WRs over Time",
+    xaxis = list(
+      title = "Date"
+    ),
+    yaxis = list(
+      title = "Seconds"
+    )
+  )
+```
+
+```{r, warning = FALSE, fig.width = 10}
+# 200 free
+
+```
+
+```{r, warning = FALSE, fig.width = 10}
+# 400 free
+
+```
+
+```{r, warning = FALSE, fig.width = 10}
+# 800 free
+
+```
+
+```{r, warning = FALSE, fig.width = 10}
+# 1500 free
+
 ```
 
 Replicate some stat analysis from https://sites.northwestern.edu/elannesscohn/2019/07/03/disruptive-sports-tech-exploratory-analysis-of-swim-world-record-data/ modeling the freestyle (non-50) events for men and women before and after the goggles were brought to the Olympics in 1976.
@@ -203,7 +286,10 @@ free = world %>%
 
 # set up models
 mod1 = lm(Time ~ Gender + Goggles, data = free)
+summary(mod1)
 
+mod2 = lm(Time ~ Gender + Goggles + Date, data = free)
+summary(mod2)
 ```
 
 
