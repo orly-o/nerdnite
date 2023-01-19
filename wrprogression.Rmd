@@ -204,6 +204,18 @@ The GDR women make up almost as many world records as the LZR records of 2008-20
 
 Plot World Record times over Time for each freestyle event, colored by men and women.
 
+```{r}
+# line for years of stuff
+vline = function(x = 0, color = "green") {
+  list(
+    type = "line",
+    y0 = 0, y1 = 1, yref = "paper",
+    x0 = x, x1 = x,
+    line = list(color = color, dash = "dot")
+  )
+}
+```
+
 ```{r, warning = FALSE, fig.width = 10}
 # 50 free
 plot_ly() %>%
@@ -222,42 +234,26 @@ plot_ly() %>%
     ),
     yaxis = list(
       title = "Seconds"
+    ),
+    shapes = list(
+      vline("1967-01-01"),
+      vline("1976-01-01"),
+      vline("2008-01-01")
     )
   )
 ```
 
-```{r}
-# plot_ly(
-#   data = world[world$Event == "50 FR",],
-#   x = ~Date,
-#   y = ~Time,
-#   color = ~Gender,
-#   type = "scatter",
-#   mode = "markers",
-#   text = ~Swimmer
-# ) %>%
-#   layout(
-#     title = "50 Free WRs over Time",
-#     xaxis = list(
-#       title = "Date"
-#     ),
-#     yaxis = list(
-#       title = "Seconds"
-#     )
-#   )
-```
-
 ```{r, warning = FALSE, fig.width = 10}
 # 100 free
-plot_ly(
-  data = world[world$Event == "100 FR",],
-  x = ~Date,
-  y = ~Time,
-  color = ~Gender,
-  type = "scatter",
-  mode = "markers",
-  text = ~Swimmer
-) %>%
+plot_ly() %>%
+  add_markers(
+    data = world[world$Event == "100 FR" & world$Gender == "F",],
+    x = ~Date, y = ~Time, name = "Female"
+  ) %>%
+  add_markers(
+    data = world[world$Event == "100 FR" & world$Gender == "M",],
+    x = ~Date, y = ~Time, name = "Male"
+  ) %>%
   layout(
     title = "100 Free WRs over Time",
     xaxis = list(
@@ -265,21 +261,26 @@ plot_ly(
     ),
     yaxis = list(
       title = "Seconds"
+    ),
+    shapes = list(
+      vline("1967-01-01"),
+      vline("1976-01-01"),
+      vline("2008-01-01")
     )
   )
 ```
 
 ```{r, warning = FALSE, fig.width = 10}
 # 200 free
-plot_ly(
-  data = world[world$Event == "200 FR",],
-  x = ~Date,
-  y = ~Time,
-  color = ~Gender,
-  type = "scatter",
-  mode = "markers",
-  text = ~Swimmer
-) %>%
+plot_ly() %>%
+  add_markers(
+    data = world[world$Event == "200 FR" & world$Gender == "F",],
+    x = ~Date, y = ~Time, name = "Female"
+  ) %>%
+  add_markers(
+    data = world[world$Event == "200 FR" & world$Gender == "M",],
+    x = ~Date, y = ~Time, name = "Male"
+  ) %>%
   layout(
     title = "200 Free WRs over Time",
     xaxis = list(
@@ -287,21 +288,26 @@ plot_ly(
     ),
     yaxis = list(
       title = "Seconds"
+    ),
+    shapes = list(
+      vline("1967-01-01"),
+      vline("1976-01-01"),
+      vline("2008-01-01")
     )
   )
 ```
 
 ```{r, warning = FALSE, fig.width = 10}
 # 400 free
-plot_ly(
-  data = world[world$Event == "400 FR",],
-  x = ~Date,
-  y = ~Time,
-  color = ~Gender,
-  type = "scatter",
-  mode = "markers",
-  text = ~Swimmer
-) %>%
+plot_ly() %>%
+  add_markers(
+    data = world[world$Event == "400 FR" & world$Gender == "F",],
+    x = ~Date, y = ~Time, name = "Female"
+  ) %>%
+  add_markers(
+    data = world[world$Event == "400 FR" & world$Gender == "M",],
+    x = ~Date, y = ~Time, name = "Male"
+  ) %>%
   layout(
     title = "400 Free WRs over Time",
     xaxis = list(
@@ -309,21 +315,26 @@ plot_ly(
     ),
     yaxis = list(
       title = "Seconds"
+    ),
+    shapes = list(
+      vline("1967-01-01"),
+      vline("1976-01-01"),
+      vline("2008-01-01")
     )
   )
 ```
 
 ```{r, warning = FALSE, fig.width = 10}
 # 800 free
-plot_ly(
-  data = world[world$Event == "800 FR",],
-  x = ~Date,
-  y = ~Time,
-  color = ~Gender,
-  type = "scatter",
-  mode = "markers",
-  text = ~Swimmer
-) %>%
+plot_ly() %>%
+  add_markers(
+    data = world[world$Event == "800 FR" & world$Gender == "F",],
+    x = ~Date, y = ~Time, name = "Female"
+  ) %>%
+  add_markers(
+    data = world[world$Event == "800 FR" & world$Gender == "M",],
+    x = ~Date, y = ~Time, name = "Male"
+  ) %>%
   layout(
     title = "800 Free WRs over Time",
     xaxis = list(
@@ -331,21 +342,26 @@ plot_ly(
     ),
     yaxis = list(
       title = "Seconds"
+    ),
+    shapes = list(
+      vline("1967-01-01"),
+      vline("1976-01-01"),
+      vline("2008-01-01")
     )
   )
 ```
 
 ```{r, warning = FALSE, fig.width = 10}
 # 1500 free
-plot_ly(
-  data = world[world$Event == "1500 FR",],
-  x = ~Date,
-  y = ~Time,
-  color = ~Gender,
-  type = "scatter",
-  mode = "markers",
-  text = ~Swimmer
-) %>%
+plot_ly() %>%
+  add_markers(
+    data = world[world$Event == "1500 FR" & world$Gender == "F",],
+    x = ~Date, y = ~Time, name = "Female"
+  ) %>%
+  add_markers(
+    data = world[world$Event == "1500 FR" & world$Gender == "M",],
+    x = ~Date, y = ~Time, name = "Male"
+  ) %>%
   layout(
     title = "1500 Free WRs over Time",
     xaxis = list(
@@ -353,6 +369,11 @@ plot_ly(
     ),
     yaxis = list(
       title = "Seconds"
+    ),
+    shapes = list(
+      vline("1967-01-01"),
+      vline("1976-01-01"),
+      vline("2008-01-01")
     )
   )
 ```
