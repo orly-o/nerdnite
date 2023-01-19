@@ -206,48 +206,15 @@ Plot World Record times over Time for each freestyle event, colored by men and w
 
 ```{r, warning = FALSE, fig.width = 10}
 # 50 free
-
-# set up moving average
-xx = world
-x.info = attr(xx, "tsp")
-tt = seq(from = x.info[1], to = x.info[2], by = 1/x.info[3])
-
-rmean5 = stats::filter(xx, rep(1/5, 5), side=2)
-
 plot_ly() %>%
   add_markers(
-    data = world[world$Event == "100 FR" & world$Gender == "F",],
+    data = world[world$Event == "50 FR" & world$Gender == "F",],
     x = ~Date, y = ~Time, name = "Female"
   ) %>%
   add_markers(
-    data = world[world$Event == "100 FR" & world$Gender == "M",],
+    data = world[world$Event == "50 FR" & world$Gender == "M",],
     x = ~Date, y = ~Time, name = "Male"
   ) %>%
-  layout(
-    title = "100 Free WRs over Time",
-    xaxis = list(
-      title = "Date"
-    ),
-    yaxis = list(
-      title = "Seconds"
-    )
-  ) %>%
-  add_lines(
-    x = tt, y = rmean5
-  )
-```
-
-```{r}
-
-plot_ly(
-  data = world[world$Event == "50 FR",],
-  x = ~Date,
-  y = ~Time,
-  color = ~Gender,
-  type = "scatter",
-  mode = "markers",
-  text = ~Swimmer
-) %>%
   layout(
     title = "50 Free WRs over Time",
     xaxis = list(
@@ -257,6 +224,27 @@ plot_ly(
       title = "Seconds"
     )
   )
+```
+
+```{r}
+# plot_ly(
+#   data = world[world$Event == "50 FR",],
+#   x = ~Date,
+#   y = ~Time,
+#   color = ~Gender,
+#   type = "scatter",
+#   mode = "markers",
+#   text = ~Swimmer
+# ) %>%
+#   layout(
+#     title = "50 Free WRs over Time",
+#     xaxis = list(
+#       title = "Date"
+#     ),
+#     yaxis = list(
+#       title = "Seconds"
+#     )
+#   )
 ```
 
 ```{r, warning = FALSE, fig.width = 10}
