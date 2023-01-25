@@ -12,6 +12,7 @@ library(dplyr)
 library(lubridate)
 library(scales)
 library(plotly)
+library(gt)
 ```
 
 Load in the data and create two new columns, one for if the Meet was the Olympics and one for if the Meet was World Champs.
@@ -41,7 +42,8 @@ How many world records are there per event?
 ```{r, warning = FALSE}
 world %>%
   group_by(Event, Gender) %>%
-  summarise(Count = length(Event))
+  summarise(Count = length(Event)) %>%
+  arrange(desc(Count))
 ```
 
 World records by country
@@ -50,7 +52,45 @@ World records by country
 world %>%
   group_by(Swimmer_Country) %>%
   summarise(Count = length(Event)) %>%
-  arrange(desc(Count))
+  rename(Country = Swimmer_Country) %>%
+  arrange(desc(Count)) %>%
+  head(5) %>%
+  gt() %>%
+  tab_header(
+    title = "World Records by Country"
+  )
+```
+
+World records by country and gender
+
+```{r}
+# women
+world %>%
+  filter(Gender == "F") %>%
+  group_by(Swimmer_Country) %>%
+  summarise(Count = length(Event)) %>%
+  rename(Country = Swimmer_Country) %>%
+  arrange(desc(Count)) %>%
+  head(5) %>%
+  gt() %>%
+  tab_header(
+    title = "World Records: Women"
+  )
+```
+
+```{r}
+# men
+world %>%
+  filter(Gender == "M") %>%
+  group_by(Swimmer_Country) %>%
+  summarise(Count = length(Event)) %>%
+  rename(Country = Swimmer_Country) %>%
+  arrange(desc(Count)) %>%
+  head(5) %>%
+  gt() %>%
+  tab_header(
+    title = "World Records: Men"
+  )
 ```
 
 World records by stroke
@@ -114,6 +154,37 @@ plot_ly(
     title = "WRs by Olympic Games",
     xaxis = list(
       title = "Olympic Games"
+    ),
+    yaxis = list(
+      title = "World Records"
+    )
+  )
+```
+
+What about just the year of each Olympics?
+
+```{r}
+# filter by Olympic years = start at 1956 and count by 4
+olympicyear = world %>%
+  mutate(OlympicYear = ifelse(Year %% 4 == 0, 1, 0)) %>%
+  filter(OlympicYear == 1) %>%
+  group_by(Year) %>%
+  summarise(Count = length(Event))
+
+# plot bar chart
+plot_ly(
+  data = olympicyear,
+  x = ~Year,
+  y = ~Count,
+  type = "bar",
+  text = ~Count,
+  name = "",
+  hovertemplate = paste("%{x}", "<br>%{text}")
+) %>%
+  layout(
+    title = "WRs by Olympic Years",
+    xaxis = list(
+      title = "Olympic Year"
     ),
     yaxis = list(
       title = "World Records"
@@ -206,7 +277,16 @@ Plot World Record times over Time for each freestyle event, colored by men and w
 
 ```{r}
 # line for years of stuff
-vline = function(x = 0, color = "green") {
+vline1 = function(x = 0, color = "green") {
+  list(
+    type = "line",
+    y0 = 0, y1 = 1, yref = "paper",
+    x0 = x, x1 = x,
+    line = list(color = color, dash = "dot")
+  )
+}
+
+vline2 = function(x = 0, color = "red") {
   list(
     type = "line",
     y0 = 0, y1 = 1, yref = "paper",
@@ -236,9 +316,10 @@ plot_ly() %>%
       title = "Seconds"
     ),
     shapes = list(
-      vline("1967-01-01"),
-      vline("1976-01-01"),
-      vline("2008-01-01")
+      vline1("1967-01-01"),
+      vline1("1976-01-01"),
+      vline1("2008-01-01"),
+      vline2("2010-01-01")
     )
   )
 ```
@@ -265,7 +346,8 @@ plot_ly() %>%
     shapes = list(
       vline("1967-01-01"),
       vline("1976-01-01"),
-      vline("2008-01-01")
+      vline("2008-01-01"),
+      vline2("2010-01-01")
     )
   )
 ```
@@ -292,7 +374,8 @@ plot_ly() %>%
     shapes = list(
       vline("1967-01-01"),
       vline("1976-01-01"),
-      vline("2008-01-01")
+      vline("2008-01-01"),
+      vline2("2010-01-01")
     )
   )
 ```
@@ -319,7 +402,8 @@ plot_ly() %>%
     shapes = list(
       vline("1967-01-01"),
       vline("1976-01-01"),
-      vline("2008-01-01")
+      vline("2008-01-01"),
+      vline2("2010-01-01")
     )
   )
 ```
@@ -346,7 +430,8 @@ plot_ly() %>%
     shapes = list(
       vline("1967-01-01"),
       vline("1976-01-01"),
-      vline("2008-01-01")
+      vline("2008-01-01"),
+      vline2("2010-01-01")
     )
   )
 ```
@@ -373,7 +458,36 @@ plot_ly() %>%
     shapes = list(
       vline("1967-01-01"),
       vline("1976-01-01"),
-      vline("2008-01-01")
+      vline("2008-01-01"),
+      vline2("2010-01-01")
+    )
+  )
+```
+
+```{r, warning = FALSE, fig.width = 10}
+# 200 IM free
+plot_ly() %>%
+  add_markers(
+    data = world[world$Event == "200 IM" & world$Gender == "F",],
+    x = ~Date, y = ~Time, name = "Female"
+  ) %>%
+  add_markers(
+    data = world[world$Event == "200 IM" & world$Gender == "M",],
+    x = ~Date, y = ~Time, name = "Male"
+  ) %>%
+  layout(
+    title = "200 IM WRs over Time",
+    xaxis = list(
+      title = "Date"
+    ),
+    yaxis = list(
+      title = "Seconds"
+    ),
+    shapes = list(
+      vline1("1967-01-01"),
+      vline1("1976-01-01"),
+      vline1("2008-01-01"),
+      vline2("2010-01-01")
     )
   )
 ```
@@ -398,6 +512,8 @@ summary(mod1)
 mod2 = lm(Time ~ Gender + Goggles + Date, data = free)
 summary(mod2)
 ```
+
+
 
 
 
