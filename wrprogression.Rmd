@@ -344,9 +344,9 @@ plot_ly() %>%
       title = "Seconds"
     ),
     shapes = list(
-      vline("1967-01-01"),
-      vline("1976-01-01"),
-      vline("2008-01-01"),
+      vline1("1967-01-01"),
+      vline1("1976-01-01"),
+      vline1("2008-01-01"),
       vline2("2010-01-01")
     )
   )
@@ -372,9 +372,9 @@ plot_ly() %>%
       title = "Seconds"
     ),
     shapes = list(
-      vline("1967-01-01"),
-      vline("1976-01-01"),
-      vline("2008-01-01"),
+      vline1("1967-01-01"),
+      vline1("1976-01-01"),
+      vline1("2008-01-01"),
       vline2("2010-01-01")
     )
   )
@@ -400,9 +400,9 @@ plot_ly() %>%
       title = "Seconds"
     ),
     shapes = list(
-      vline("1967-01-01"),
-      vline("1976-01-01"),
-      vline("2008-01-01"),
+      vline1("1967-01-01"),
+      vline1("1976-01-01"),
+      vline1("2008-01-01"),
       vline2("2010-01-01")
     )
   )
@@ -428,9 +428,9 @@ plot_ly() %>%
       title = "Seconds"
     ),
     shapes = list(
-      vline("1967-01-01"),
-      vline("1976-01-01"),
-      vline("2008-01-01"),
+      vline1("1967-01-01"),
+      vline1("1976-01-01"),
+      vline1("2008-01-01"),
       vline2("2010-01-01")
     )
   )
@@ -456,9 +456,9 @@ plot_ly() %>%
       title = "Seconds"
     ),
     shapes = list(
-      vline("1967-01-01"),
-      vline("1976-01-01"),
-      vline("2008-01-01"),
+      vline1("1967-01-01"),
+      vline1("1976-01-01"),
+      vline1("2008-01-01"),
       vline2("2010-01-01")
     )
   )
